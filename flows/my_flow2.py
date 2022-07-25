@@ -1,7 +1,5 @@
 import prefect
 from prefect import task, Flow 
-import sys, os
-sys.path.append(os.getcwd()) # this is needed to locate src/ and flows/
 from src.my_module2 import my_function2 # import any functions from module dependencies located in src/
 from flows.config_flows import get_flow_storage, RUN_CONFIG # import flow config shared by all flows
 
