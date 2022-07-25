@@ -17,23 +17,23 @@ This project uses Prefect, Docker and Terraform.
 
 ## Config ##
 To run this code you will need to clone this repository and configure your secrets/variables accordingly. 
-- Add to Prefect Cloud Secrets a secret named **GITHUB_ACCESS_TOKEN** with your token (see `config_flows.py`).
+- Add to Prefect Cloud Secrets a secret named **GITHUB_ACCESS_TOKEN** with your token (see [config_flows.py](flows/config_flows.py)).
 - Add to GitHub Secrets:
-    - A secret named **PREFECT_API_KEY** with your key (see `config_flows.py`).
-    - Secrets named **AWS_ACCESS_KEY_ID** and **AWS_SECRET_ACCESS_KEY** with your id and your key (see `deploy.yml`).
-- Make sure your AWS credentials file is in the path `"~/.aws/credentials"` (see `provider.tf`).
-- Set your AWS account id, AWS region, image name, cpu and memory in `terraform.tfvars`. Terraform will create an AWS ECS task role, task execution role, task definition and cluster with the image name prefix. 
-- Set your AWS region in `deploy.yml`. 
+    - A secret named **PREFECT_API_KEY** with your key (see [config_flows.py](flows/config_flows.py)).
+    - Secrets named **AWS_ACCESS_KEY_ID** and **AWS_SECRET_ACCESS_KEY** with your id and your key (see [deploy.yml](.github/workflows/deploy.yml)).
+- Make sure your AWS credentials file is in the path `"~/.aws/credentials"` (see [provider.tf](terraform/provider.tf)).
+- Set your AWS account id, AWS region, image name, cpu and memory in [terraform.tfvars](terraform/terraform.tfvars). Terraform will create an AWS ECS task role, task execution role, task definition and cluster with the image name prefix. 
+- Set your AWS region in [deploy.yml](.github/workflows/deploy.yml). 
 - EXTRA: if you need to use a dotenv file (that doesn't have secrets): 
-    - Make sure `.env` isn't in `.gitignore`.
-    - Uncomment the following from `deploy.yml`:
+    - Make sure '.env' isn't in [.gitignore](.gitignore).
+    - Uncomment the following from [deploy.yml](.github/workflows/deploy.yml):
     ```
      - name: Load .env file 
        uses: xom9ikk/dotenv@v1.0.2 
        with: 
          path: path/to/env/ 
     ```
-    - Uncomment the following from `my_module1.py`:
+    - Uncomment the following from [my_module1.py](src/my_module1.py):
     ```
     from dotenv import load_dotenv 
 
