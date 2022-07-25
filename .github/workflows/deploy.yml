@@ -52,9 +52,12 @@ jobs:
         password: ${{ needs.build-image.outputs.ECR_PASSWORD }}
     env: 
       PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
-      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
     steps:
     - uses: actions/checkout@v2
+    # - name: Load .env file 
+    #   uses: xom9ikk/dotenv@v1.0.2 
+    #   with: 
+    #     path: ''
     - uses: actions/setup-python@v2
       with:
         python-version: 3.9
