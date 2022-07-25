@@ -25,7 +25,7 @@ To run this code you will need to clone this repository and configure your secre
 - Set your AWS account id, AWS region, image name, cpu and memory in [terraform.tfvars](terraform/terraform.tfvars). Terraform will create an AWS ECS task role, task execution role, task definition and cluster with the image name prefix. 
 - Set your AWS region in [deploy.yml](.github/workflows/deploy.yml). 
 - EXTRA: if you need to use a dotenv file (that doesn't have secrets): 
-    - Make sure '.env' isn't in [.gitignore](.gitignore).
+    - Make sure `.env` isn't in [.gitignore](.gitignore).
     - Uncomment the following from [deploy.yml](.github/workflows/deploy.yml):
     ```
      - name: Load .env file 
