@@ -1,0 +1,5 @@
+aws_region = "sa-east-1"
+aws_account_id = "337519118885"
+name = "hello-world"
+cpu = "0.5 vcpu"
+memory = "1 GB"

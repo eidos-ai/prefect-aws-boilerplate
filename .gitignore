@@ -1,0 +1,5 @@
+tests.txt
+src/*pycache*
+flows/*pycache*
+.terraform*
+terraform/terraform.tstate

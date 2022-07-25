@@ -1,0 +1,74 @@
+name: Deploy 
+on:
+  workflow_dispatch: # comment to disable manual workflow runs
+  # push: 
+  #   branches: 
+  #     - master # uncomment to enable workflow run on push to master branch
+  #   paths: # uncomment to enable workflow run on push to master branch with changes in the following paths
+  #     - 'flows/*'
+  #     - 'src/*'
+  #     - '.github/workflows/deploy.yml'
+  #     - 'Dockerfile'
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    outputs:
+      ECR_PASSWORD: ${{ steps.retrieve_password.outputs.ECR_PASSWORD }}
+      IMAGE: ${{ steps.image.outputs.IMAGE }}
+    steps:
+    - name: Check out code 
+      uses: actions/checkout@v2
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: sa-east-1
+        mask-aws-account-id: 'no'
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+    - name: Build, tag, and push docker image to Amazon ECR
+      id: image 
+      env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: hello-world
+        IMAGE_TAG: latest
+      run: |
+        echo "::set-output name=IMAGE::${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}"
+        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+        docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+    - id: retrieve_password
+      name: Retrieve ECR password and store as secret
+      run: echo "::set-output name=ECR_PASSWORD::$(aws ecr get-login-password)"
+
+  register-flows:
+    runs-on: ubuntu-latest
+    needs: build-image
+    container:
+      image: ${{ needs.build-image.outputs.IMAGE }} 
+      credentials:
+        username: AWS
+        password: ${{ needs.build-image.outputs.ECR_PASSWORD }}
+    env: 
+      PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Perform prefect login
+      uses: sp1thas/prefect-cli-action@main
+      with:
+        command: prefect auth login --key $PREFECT_API_KEY
+    - name: Create prefect project "hello-world"
+      uses: sp1thas/prefect-cli-action@main
+      with:
+        command: prefect create project hello-world
+    - name: Register prefect flow
+      uses: sp1thas/prefect-cli-action@main
+      with:
+        command: prefect register --project hello-world -p flows/register_flows.py
+
+  

@@ -1,0 +1,4 @@
+python-dotenv==0.20.0
+prefect
+prefect[aws]
+prefect[github]
