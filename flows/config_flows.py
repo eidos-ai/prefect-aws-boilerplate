@@ -11,7 +11,7 @@ RUN_CONFIG = ECSRun(
     run_task_kwargs=dict(cluster=f"{ECS_CLUSTER_NAME}", launchType="FARGATE",),
     env={"PREFECT__CLOUD__AGENT__LABELS":['prod'], "PREFECT__CLOUD__AGENT__LEVEL": "INFO",
         "PREFECT__CLOUD__API":"https://api.prefect.io", "PREFECT__CLOUD__USE_LOCAL_SECRETS":"False",
-        "PREFECT__CLOUD__API_KEY":f"{PREFECT_API_KEY}","PYTHONPATH":"$PYTHONPATH:/opt/repository/",},
+        "PREFECT__CLOUD__API_KEY":f"{PREFECT_API_KEY}"},
 )
 def get_flow_storage(flow_file):
     STORAGE = GitHub(
