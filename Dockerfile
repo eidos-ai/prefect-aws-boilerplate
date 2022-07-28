@@ -4,4 +4,5 @@ COPY . /opt/repository/
 COPY src /opt/repository/src/
 COPY flows /opt/repository/flows/
 WORKDIR /opt/repository
+ENV PYTHONPATH "${PYTHONPATH}:/opt/repository/"
 RUN pip install -r requirements.txt
